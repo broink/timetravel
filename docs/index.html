@@ -32,11 +32,6 @@ class Segment{
 		push()
 			// Move to the correct segment position
 			translate(this.translation.x, this.translation.y);
-			// Draw a nice backgound
-			//strokeWeight(5)
-			//stroke(200,0,0)
-			//line(this.start.x-1, this.start.y-1, this.end.x+1, this.end.y+1)
-			// Draw the segment
 			strokeWeight(3)
 			stroke(255,0,0)
 			line(this.start.x, this.start.y, this.end.x, this.end.y)
@@ -63,6 +58,51 @@ class Letter{
 		}
 	}
 }
+
+class Clock{
+	constructor(){	
+	}
+	render(time){
+		/*
+		time is [hh,mm,ss]
+		*/
+		push()
+			strokeWeight(1)
+			stroke(0);
+			fill(230);
+			ellipse(0,0,150,150);
+			stroke(0)
+			strokeWeight(3)
+			push()
+				for(var i=0; i< 12; i++){
+					rotate(TWO_PI/12);
+					line(50,50,40,40);
+				}
+			pop()
+			push()
+				// Hour
+				strokeWeight(4)
+				stroke(255,0,0)
+				rotate((time[0]/12)*TWO_PI + (time[1]/(60*12))*TWO_PI)
+				line(0,0,30,30)
+			pop()
+			push()
+				// Minute
+				strokeWeight(2)
+				stroke(0,255,0)
+				rotate((time[1]/60)*TWO_PI + (time[2]/(60*60))*TWO_PI)
+				line(0,0,45,45)
+			pop()
+			push()
+				strokeWeight(1)
+				stroke(0,0,255)
+				rotate((time[2]/60)*TWO_PI + (time[3]/(60*1000))*TWO_PI)
+				line(0,0,43,43)
+			pop()
+		pop()
+	}
+	
+}
 var numbers = {
 	0: new Letter([1,1,1,0,1,1,1]),
 	1: new Letter([0,0,1,0,0,1,0]),
@@ -80,6 +120,7 @@ var numbers = {
 
 var isNeg = false;
 
+var clock = new Clock();
 function getNow(){
 	var currentTime = new Date();
 	if(currentTime.getDate() < 10){
@@ -103,6 +144,8 @@ function getNow(){
 		(yeardiff < 0) ? yearcounter -= factor: yearcounter += factor;
 	} else {
 		yearcounter = yeardiff;
+		
+		//yeardiff = 0;
 	}
 	var year = String(parseInt(parseInt(currentTime.getFullYear())+yearcounter)).split("");
 	if(parseInt(currentTime.getFullYear()) + yearcounter < 0){
@@ -188,6 +231,26 @@ function draw(){
 		}
 	}
 	pop()
+	translate(200,400)
+	var time = new Date();
+	if(yearcounter < 0 && yearcounter != yeardiff){
+		clock.render([
+			-time.getHours() + yearcounter*sin(Math.abs(yeardiff-yearcounter))%12,
+			-time.getMinutes() + yearcounter*sin(Math.abs(yeardiff-yearcounter))%60,
+			-time.getSeconds()+yearcounter*sin(Math.abs(yeardiff-yearcounter))%120,
+			-time.getMilliseconds()
+		]);	
+	} else if (yearcounter > 0 && yearcounter != yeardiff){
+		clock.render([
+			time.getHours() + 12*sin(yearcounter/12)%12,//Math.log(yearcounter)*sin(Math.abs(yeardiff-yearcounter))%12,
+			time.getMinutes() + 60*sin(yearcounter/60)%60,//Math.log(yearcounter)%60,//*sin(Math.abs(yeardiff-yearcounter)) % 60,
+			time.getSeconds() + 60*sin(yearcounter/4)%60,//*sin(Math.abs(yeardiff-yearcounter)) % 60,
+			time.getMilliseconds()
+		]);
+	} else {
+		clock.render([time.getHours(), time.getMinutes(), time.getSeconds(), time.getMilliseconds()]);	
+	}
+	
 }
 </script>
 </body>
