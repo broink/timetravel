@@ -1,0 +1,203 @@
+<html>
+<head>
+    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+    <style> body {padding: 0; margin: 0;} </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.min.js"></script>
+    <script
+  src="http://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+  </head>
+  <body>
+<script type="text/javascript">
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  //ortho(-width, width, height, -height/2, 0.1, 100);
+
+  frameRate(60)
+}
+
+class Segment{
+	constructor(horizontal, translation){
+		this.start = {x: 0, y:0}
+		this.translation = translation;
+		if(horizontal){
+			this.end = {x: 35, y: 0}
+		} else {
+			this.end = {x: 0, y: 35}
+		}
+	}
+
+	render(){
+		push()
+			// Move to the correct segment position
+			translate(this.translation.x, this.translation.y);
+			// Draw a nice backgound
+			//strokeWeight(5)
+			//stroke(200,0,0)
+			//line(this.start.x-1, this.start.y-1, this.end.x+1, this.end.y+1)
+			// Draw the segment
+			strokeWeight(3)
+			stroke(255,0,0)
+			line(this.start.x, this.start.y, this.end.x, this.end.y)
+		pop()
+	}
+}
+
+class Letter{
+
+	constructor(number_array){
+		this.segments = new Array(7);
+		this.segments[0] = (number_array[0]) ? new Segment(true, {x: 0, y: 0}) : null;
+		this.segments[1] = (number_array[1]) ? new Segment(false, {x: 0, y: 0}) : null;
+		this.segments[2] = (number_array[2]) ? new Segment(false, {x: 40, y: 0}) : null;
+		this.segments[3] = (number_array[3]) ? new Segment(true, {x: 0, y: 40}) : null;
+		this.segments[4] = (number_array[4]) ? new Segment(false, {x: 0, y: 40}) : null;
+		this.segments[5] = (number_array[5]) ? new Segment(false, {x: 40, y: 40}) : null;
+		this.segments[6] = (number_array[6]) ? new Segment(true, {x: 0, y: 80}) : null;
+	}
+
+	render(){
+		for(var s in this.segments){
+			this.segments[s] ? this.segments[s].render():null;
+		}
+	}
+}
+var numbers = {
+	0: new Letter([1,1,1,0,1,1,1]),
+	1: new Letter([0,0,1,0,0,1,0]),
+	2: new Letter([1,0,1,1,1,0,1]),
+	3: new Letter([1,0,1,1,0,1,1]),
+	4: new Letter([0,1,1,1,0,1,0]),
+	5: new Letter([1,1,0,1,0,1,1]),
+	6: new Letter([1,1,0,1,1,1,1]),
+	7: new Letter([1,0,1,0,0,1,0]),
+	8: new Letter([1,1,1,1,1,1,1]),
+	9: new Letter([1,1,1,1,0,1,0]),
+	10: new Letter([0,0,0,0,0,0,0]),
+	NaN: new Letter([0,0,0,1,0,0,0]) 
+}
+
+var isNeg = false;
+
+function getNow(){
+	var currentTime = new Date();
+	if(currentTime.getDate() < 10){
+		var date = "0"+String(currentTime.getDate())
+	} else {
+		var date = String(currentTime.getDate()).split("")
+	}
+	if(currentTime.getMonth()+1 < 10){
+		var month = "0"+String(currentTime.getMonth()+1)
+	} else {
+		var month = String(currentTime.getMonth()+1).split("")	
+	}
+	
+	if(yearcounter != yeardiff){
+		var factor = 1;
+		if(Math.abs(yeardiff - yearcounter) > 1000){
+			factor = 30;
+		} else if(Math.abs(yeardiff - yearcounter) > 80){
+			factor = 5;
+		}
+		(yeardiff < 0) ? yearcounter -= factor: yearcounter += factor;
+	} else {
+		yearcounter = yeardiff;
+	}
+	var year = String(parseInt(parseInt(currentTime.getFullYear())+yearcounter)).split("");
+	if(parseInt(currentTime.getFullYear()) + yearcounter < 0){
+		year.shift()
+	}
+	if(year.length < 4){
+		console.log(year, year.length)
+		switch(year.length){
+			case 3:
+				year.unshift("0");
+				break;
+			case 2:
+				year.unshift("0");
+				year.unshift("0");
+				break;
+			case 1:
+				year.unshift("0");
+				year.unshift("0");
+				year.unshift("0");
+				break;
+		}	
+	}
+	if(parseInt(currentTime.getFullYear()) + yearcounter < 0){
+		year.unshift('-')
+	} else {
+		year.unshift('10')
+	}
+	
+	
+	while(year.length <= 5){
+			year.push("10")	
+	}
+	/*var minutes = String(currentTime.getMinutes()).split("");
+	(minutes.length == 1)? minutes.unshift("0"):null;
+	var hours = String(currentTime.getHours()).split("");
+	(hours.length == 1)? hours.unshift("0"):null;
+	var secs = String(currentTime.getSeconds()).split("");
+	(secs.length == 1) ? secs.unshift("0") : null;*/
+	return [
+		parseInt(date[0]),
+		parseInt(date[1]),
+		parseInt(month[0]),
+		parseInt(month[1]),
+		parseInt(year[0]),
+		parseInt(year[1]),
+		parseInt(year[2]),
+		parseInt(year[3]),
+		parseInt(year[4]),
+		parseInt(year[5]),
+		/*
+		parseInt(hours[0]),
+		parseInt(hours[1]),
+		parseInt(minutes[0]),
+		parseInt(minutes[1]),
+		parseInt(secs[0]),
+		parseInt(secs[1])*/
+	]
+}
+var newDate = null;
+var yeardiff = 0;
+var yearcounter = 0;
+
+function draw(){
+	var now = null;
+	(!newDate) ? now = getNow() : now = newDate;
+	
+	background(50)
+	translate(80,80)
+	stroke(0)
+	fill(30)
+	rect(0,0,640,220)
+	translate(20,20)
+	push()
+	for(n in now){
+		numbers[now[n]].render();
+		translate(60,0)
+		if(n == 1 || n == 3){
+			translate(0,40)
+			stroke(200,0,0)
+			strokeWeight(3)
+			line(0,0,20,0)
+			translate(40,-40)
+		}
+	}
+	pop()
+}
+</script>
+</body>
+<input type="number"><p>Skriv in +/- antal år. Enter för att tidsresa</p>
+<script type="text/javascript">
+
+	$('input').on('change', function(){
+		yearcounter = 0;
+		yeardiff = parseInt($(this)[0].value);
+	})
+	
+</script>
+</html>
