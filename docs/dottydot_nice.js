@@ -22,7 +22,7 @@ function Horning(count){
 function render(Horning, tick, epellepsi){
 	push()
 	rotate((tick/50)*TWO_PI/Horning.vertices.length)
-	strokeWeight(1+maxCorner*cos((tick/50)*TWO_PI/Horning.vertices.length))
+	strokeWeight(Horning.vertices.length*(1.1+cos((tick/50)*TWO_PI/Horning.vertices.length)))
 	noFill()
 	
 	beginShape(POINTS)
