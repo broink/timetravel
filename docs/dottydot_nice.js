@@ -2,7 +2,7 @@
 dottydot.js
 */
 
-var l = 100;
+var l = 250;
 var maxCorner = 24;
 function Horning(count){
 //	function constructor(count){
@@ -21,22 +21,23 @@ function Horning(count){
 
 function render(Horning, tick, epellepsi){
 	push()
-	rotate((tick/50)*TWO_PI/Horning.vertices.length)
-	strokeWeight(Horning.vertices.length*(1.1+cos((tick/50)*TWO_PI/Horning.vertices.length)))
+	translate(0.5*Horning.radius*Math.cos(0.02*tick/Horning.vertices.length), 1.2*Horning.radius*Math.sin(0.05*tick/Horning.vertices.length))
+	rotate(((sin((tick)/250)+2.1)*(tick)/150)*(TWO_PI/Horning.vertices.length))
+	strokeWeight(Horning.vertices.length*(1.5+cos((tick/50)*TWO_PI/Horning.vertices.length)))
 	noFill()
 	
 	beginShape(POINTS)
-	stroke(
-	25+Horning.vertices.length*(200/maxCorner),
-	0,
-	0)	
+	
 	for(var v = 0; v < Horning.vertices.length+1; v++){
 
-		
-		line(
+		stroke(
+		25+Horning.vertices.length*(200/maxCorner)*cos(tick/180),
+		25+v*(200/maxCorner)*sin(tick/120),
+		0)	
+		/*line(
 			Horning.vertices[v%(Horning.vertices.length)].x,Horning.vertices[v%(Horning.vertices.length)].y,
 			Horning.vertices[(v+1)%(Horning.vertices.length)].x,Horning.vertices[(v+1)%(Horning.vertices.length)].y
-		)
+		)*/
 		vertex(Horning.vertices[v%(Horning.vertices.length)].x,Horning.vertices[v%(Horning.vertices.length)].y)
 
 
@@ -65,7 +66,7 @@ function setup(){
 var speed = 10;
 var epellepsi = false;
 function draw(){
-	background(200);
+	background(100+50*sin(frameCount/130));
 	translate(windowWidth/2, windowHeight/2);
  	rotate(-HALF_PI)
 	for(var s = shapes.length-1; s >= 0; s--){//} in shapes.reverse()){
