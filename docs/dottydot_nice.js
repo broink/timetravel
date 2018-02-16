@@ -24,6 +24,8 @@ function render(Horning, tick, epellepsi){
 	translate(0.5*Horning.radius*Math.cos(0.02*tick/Horning.vertices.length), 1.2*Horning.radius*Math.sin(0.05*tick/Horning.vertices.length))
 	rotate(((sin((tick)/250)+2.1)*(tick)/150)*(TWO_PI/Horning.vertices.length))
 	var w = Horning.vertices.length*(1.5+cos((tick/50)*TWO_PI/Horning.vertices.length))
+	var x = sin((tick+Horning.vertices.length)/150)
+	var y = cos((Horning.vertices.length-1-tick)/250)
 	noFill()
 	strokeWeight(w)
 	beginShape(POINTS)
@@ -31,10 +33,13 @@ function render(Horning, tick, epellepsi){
 	for(var v = 0; v < Horning.vertices.length+1; v++){
 		
 		stroke(
-		25+Horning.vertices.length*(200/maxCorner)*cos(tick/180),
-		25+v*(200/maxCorner)*sin(tick/120),
+		75+Horning.vertices.length*(200/maxCorner)*cos(tick/180),
+		75+v*(200/maxCorner)*sin(tick/120),
 		0)
-		vertex(Horning.vertices[v%(Horning.vertices.length)].x,Horning.vertices[v%(Horning.vertices.length)].y)
+		vertex(
+			x*Horning.vertices[v%(Horning.vertices.length)].x,
+			y*Horning.vertices[v%(Horning.vertices.length)].y
+		)
 		
 		
 
@@ -47,8 +52,8 @@ function render(Horning, tick, epellepsi){
 		for(var v = 0; v < Horning.vertices.length+1; v++){
 				
 			line(
-				Horning.vertices[v%(Horning.vertices.length)].x,Horning.vertices[v%(Horning.vertices.length)].y,
-				Horning.vertices[(v+1)%(Horning.vertices.length)].x,Horning.vertices[(v+1)%(Horning.vertices.length)].y
+				x*Horning.vertices[v%(Horning.vertices.length)].x,y*Horning.vertices[v%(Horning.vertices.length)].y,
+				x*Horning.vertices[(v+1)%(Horning.vertices.length)].x,y*Horning.vertices[(v+1)%(Horning.vertices.length)].y
 			)
 		}
 	}
@@ -75,8 +80,8 @@ function setup(){
 var speed = 10;
 var epellepsi = false;
 function draw(){
-	background(100+50*sin(frameCount/130));
-	translate(windowWidth/2, windowHeight/2);
+	background(50+50*sin(frameCount/130));
+	translate(windowWidth/2, windowHeight*0.8);
  	rotate(-HALF_PI)
 	for(var s = shapes.length-1; s >= 0; s--){//} in shapes.reverse()){
 		render(shapes[s], frameCount,epellepsi)//.render()
